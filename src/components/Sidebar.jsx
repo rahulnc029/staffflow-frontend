@@ -1,0 +1,65 @@
+import { Link, useLocation } from "react-router-dom";
+
+function Sidebar() {
+    const location = useLocation();
+
+    const user = JSON.parse(
+        localStorage.getItem("user")
+    );
+
+    let menuItems = [];
+
+    // Admin Menu
+    if(user.role === "Admin"){
+        menuItems = [
+            {
+                name: "Home",
+                path: "/admin/dashboard",
+            },
+            {
+                name: "Create Employee",
+                path: "/admin/create-employee",
+            },
+        ];
+    }
+
+    // Manager Menu
+    else if (user.role === "Manager") {
+
+        menuItems = [
+            {
+                name: "Home",
+                path: "/manager/dashboard",
+            },
+        ];
+    }
+
+    // User Menu
+    else {
+
+        menuItems = [
+            {
+                name: "Home",
+                path: "/user/dashboard",
+            },
+        ];
+    }
+
+    return (
+        <div className="w-[250px] h-screen bg-gray-900 text-white p-5">
+            <h1 className="text-2xl font-col gap-3">
+                StaffFlow
+            </h1>
+
+            <div className="flex flex-col gap-3">
+                {menuItems.map((item) => (
+                    <Link key={item.path} to={item.path} className={`p-3 rounded ${location.pathname === item.path ? "bg-blue-600" : "hover:bg-gray-700"}`}>
+                        {item.name}
+                    </Link>
+                ))}
+            </div>
+        </div>
+    )
+}
+
+export default Sidebar;
