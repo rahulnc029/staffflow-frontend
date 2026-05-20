@@ -20,6 +20,10 @@ function Sidebar() {
                 name: "Create Employee",
                 path: "/admin/create-employee",
             },
+            {
+                name: "Holidays",
+                path: "/admin/holidays",
+            },
         ];
     }
 
@@ -30,6 +34,14 @@ function Sidebar() {
             {
                 name: "Home",
                 path: "/manager/dashboard",
+            },
+            {
+                name: "Regularizations",
+                path: "/manager/regularizations",
+            },
+            {
+                name: "Leave Requests",
+                path: "/manager/leave-requests",
             },
         ];
     }
@@ -42,6 +54,14 @@ function Sidebar() {
                 name: "Home",
                 path: "/user/dashboard",
             },
+            {
+                name: "Attendance",
+                path: "/user/attendance",
+            },
+            {
+                name: "Leave Requests",
+                path: "/user/leaves",
+            }
         ];
     }
 

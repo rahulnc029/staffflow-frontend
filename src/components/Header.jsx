@@ -19,7 +19,7 @@ function Header() {
             <h1 className="text-xl font-bold">StaffFlow</h1>
 
             <div className="relative">
-                <button onClick={() => setShowMenu(!showMenu)} className="w-10 h-10 rounded-full bg-blue-600 text-white">
+                <button onClick={() => setShowMenu(!showMenu)} className="w-10 h-10 rounded-full bg-blue-600 text-white cursor-pointer">
                     {user.employeeName.charAt(0)}
                 </button>
                 {showMenu && (
@@ -30,7 +30,7 @@ function Header() {
                         </div>
                         <button
                             onClick={handleLogout}
-                            className="w-full text-left p-3 hover:bg-gray-100"
+                            className="w-full text-left p-3 hover:bg-gray-100 cursor-pointer"
                         >
                             Logout
                         </button>

@@ -41,7 +41,7 @@ function Dashboard() {
                     </p>
                 </div>
 
-                <button onClick={() => navigate("/admin/create-employee")} className="bg-blue-600 text-white px-5 py-2 rounded">Create New</button>
+                <button onClick={() => navigate("/admin/create-employee")} className="bg-blue-600 text-white px-5 py-2 rounded cursor-pointer">Create New</button>
             </div>
 
             <div className="bg-white rounded-lg shadow p-5">

@@ -141,7 +141,7 @@ function CreateEmployee() {
 
                         <button
                             type="submit"
-                            className="bg-blue-600 text-white px-5 py-2 rounded"
+                            className="bg-blue-600 text-white px-5 py-2 rounded cursor-pointer"
                         >
                             Create Employee
                         </button>

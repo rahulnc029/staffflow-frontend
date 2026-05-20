@@ -33,7 +33,7 @@ function Login() {
 
             if (role === "Admin") {
                 navigate("/admin/dashboard");
-            } else if(role === "Manager") {
+            } else if (role === "Manager") {
                 navigate("/manager/dashboard");
             } else {
                 navigate("/user/dashboard")
@@ -70,10 +70,20 @@ function Login() {
                         onChange={handleChange}
                         className="w-full border p-2 rounded mt-1"
                     />
+
+                    <div className="mb-4 text-right">
+                        <button
+                            type="button"
+                            onClick={() => alert("Please contact Admin to reset your password")}
+                            className="text-blue-600 text-sm cursor-pointer hover:underline"
+                        >
+                            Forgot Password?
+                        </button>
+                    </div>
                 </div>
                 <button
                     type="submit"
-                    className="w-full bg-blue-600 text-white p-2 rounded"
+                    className="w-full bg-blue-600 text-white p-2 rounded cursor-pointer"
                 >
                     Login
                 </button>

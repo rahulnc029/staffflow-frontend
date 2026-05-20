@@ -19,6 +19,7 @@ function EditUser() {
         employeeName: "",
         employeeCode: "",
         employeeEmail: "",
+        employeePassword: "",
         location: "",
         role: "",
     });
@@ -95,6 +96,15 @@ function EditUser() {
                     />
 
                     <input
+                        type="password"
+                        name="employeePassword"
+                        placeholder="New Password (Optional)"
+                        value={formData.employeePassword}
+                        onChange={handleChange}
+                        className="border p-2 rounded"
+                    />
+
+                    <input
                         type="text"
                         name="location"
                         value={formData.location}
@@ -123,7 +133,7 @@ function EditUser() {
 
                     <button
                         type="submit"
-                        className="bg-blue-600 text-white px-5 py-2 rounded"
+                        className="bg-blue-600 text-white px-5 py-2 rounded cursor-pointer"
                     >
                         Update User
                     </button>
