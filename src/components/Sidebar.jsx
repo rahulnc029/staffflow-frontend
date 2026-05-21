@@ -10,7 +10,7 @@ function Sidebar() {
     let menuItems = [];
 
     // Admin Menu
-    if(user.role === "Admin"){
+    if (user.role === "Admin") {
         menuItems = [
             {
                 name: "Home",
@@ -61,12 +61,16 @@ function Sidebar() {
             {
                 name: "Leave Requests",
                 path: "/user/leaves",
-            }
+            },
+            {
+                name: "Attendance Calendar",
+                path: "/user/attendance-calendar",
+            },
         ];
     }
 
     return (
-        <div className="w-[250px] h-screen bg-gray-900 text-white p-5">
+        <div className="w-[250px] h-screen bg-gray-900 text-white p-5 overflow-y-auto flex-shrink-0">
             <h1 className="text-2xl font-col gap-3">
                 StaffFlow
             </h1>

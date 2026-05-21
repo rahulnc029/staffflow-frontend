@@ -68,59 +68,98 @@ function Leaves() {
                     onSubmit={handleSubmit}
                     className="grid grid-cols-2 gap-4"
                 >
-                    <select
-                        name="leaveType"
-                        value={formData.leaveType}
-                        onChange={handleChange}
-                        className="border p-2 rounded"
-                        required
-                    >
-                        <option value="">
-                            Select Leave Type
-                        </option>
-                        <option value="Sick Leave">
-                            Sick Leave
-                        </option>
-                        <option value="Casual Leave">
-                            Casual Leave
-                        </option>
-                        <option value="Emergency Leave">
-                            Emergency Leave
-                        </option>
-                    </select>
 
-                    <input
-                        type="date"
-                        name="fromDate"
-                        value={formData.fromDate}
-                        onChange={handleChange}
-                        className="border p-2 rounded"
-                        required
-                    />
-                    <input
-                        type="date"
-                        name="toDate"
-                        value={formData.toDate}
-                        onChange={handleChange}
-                        className="border p-2 rounded"
-                        required
-                    />
+                    {/* Leave Type */}
+                    <div className="flex flex-col">
+                        <label className="mb-1 font-medium">
+                            Leave Type
+                        </label>
 
-                    <textarea
-                        name="reason"
-                        placeholder="Reason"
-                        value={formData.reason}
-                        onChange={handleChange}
-                        className="border p-2 rounded col span-2"
-                        required
-                    />
+                        <select
+                            name="leaveType"
+                            value={formData.leaveType}
+                            onChange={handleChange}
+                            className="border p-2 rounded"
+                            required
+                        >
+                            <option value="">
+                                Select Leave Type
+                            </option>
 
+                            <option value="Sick Leave">
+                                Sick Leave
+                            </option>
+
+                            <option value="Casual Leave">
+                                Casual Leave
+                            </option>
+
+                            <option value="Emergency Leave">
+                                Emergency Leave
+                            </option>
+                        </select>
+                    </div>
+
+                    {/* Empty Grid Space */}
+                    <div></div>
+
+                    {/* From Date */}
+                    <div className="flex flex-col">
+                        <label className="mb-1 font-medium">
+                            From Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="fromDate"
+                            value={formData.fromDate}
+                            onChange={handleChange}
+                            className="border p-2 rounded"
+                            required
+                        />
+                    </div>
+
+                    {/* To Date */}
+                    <div className="flex flex-col">
+                        <label className="mb-1 font-medium">
+                            To Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="toDate"
+                            value={formData.toDate}
+                            onChange={handleChange}
+                            className="border p-2 rounded"
+                            required
+                        />
+                    </div>
+
+                    {/* Reason */}
+                    <div className="flex flex-col col-span-2">
+
+                        <label className="mb-1 font-medium">
+                            Reason
+                        </label>
+
+                        <textarea
+                            name="reason"
+                            placeholder="Enter reason"
+                            value={formData.reason}
+                            onChange={handleChange}
+                            className="border p-2 rounded h-28 resize-none"
+                            required
+                        />
+                    </div>
+
+                    {/* Button */}
                     <button
                         type="submit"
                         className="bg-blue-600 text-white px-5 py-2 rounded w-fit cursor-pointer"
                     >
                         Apply Leave
                     </button>
+
                 </form>
             </div>
 
@@ -143,8 +182,8 @@ function Leaves() {
                     <tbody>
                         {leaves.map((item) => (
                             <tr
-                            key={item._id}
-                            className="border-b"
+                                key={item._id}
+                                className="border-b"
                             >
                                 <td className="p-3">{item.leaveType}</td>
                                 <td className="p-3">{item.fromDate}</td>
@@ -152,7 +191,7 @@ function Leaves() {
                                 <td className="p-3">{item.reason}</td>
                                 <td className="p-3">
                                     <span
-                                    className={`px-3 py-1 rounded text-white text-sm ${item.status === "Pending" ? "bg-orange-500" : item.status === "Approved" ? "bg-green-600" : "bg-red-600"}`}
+                                        className={`px-3 py-1 rounded text-white text-sm ${item.status === "Pending" ? "bg-orange-500" : item.status === "Approved" ? "bg-green-600" : "bg-red-600"}`}
                                     >
                                         {item.status}
                                     </span>

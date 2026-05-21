@@ -12,6 +12,7 @@ import LeaveRequests from "../pages/manager/LeaveRequests";
 import Leaves from "../pages/user/Leaves";
 import AdminHolidays from "../pages/admin/Holidays";
 import UserHolidays from "../pages/user/Holidays";
+import AttendanceCalendar from "../pages/user/AttendanceCalendar";
 
 function AppRoutes() {
     return (
@@ -109,6 +110,14 @@ function AppRoutes() {
                     element={
                         <ProtectedRoute allowedRole="User">
                             <UserHolidays />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/user/attendance-calendar"
+                    element={
+                        <ProtectedRoute allowedRole="User">
+                            <AttendanceCalendar />
                         </ProtectedRoute>
                     }
                 />
