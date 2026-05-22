@@ -37,13 +37,13 @@ function Regularizations() {
                 <div className="flex gap-3 mb-4">
                     <button
                         onClick={() => setFilterStatus("All")}
-                        className={`px-4 py-2 rounded ${filterStatus === "All" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+                        className={`cursor-pointer px-4 py-2 rounded ${filterStatus === "All" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
                     >
                         All
                     </button>
                     <button
                         onClick={() => setFilterStatus("Pending")}
-                        className={`px-4 py-2 rounded ${filterStatus === "Pending"
+                        className={`cursor-pointer px-4 py-2 rounded ${filterStatus === "Pending"
                             ? "bg-orange-500 text-white"
                             : "bg-gray-200"
                             }`}
@@ -52,7 +52,7 @@ function Regularizations() {
                     </button>
                     <button
                         onClick={() => setFilterStatus("Approved")}
-                        className={`px-4 py-2 rounded ${filterStatus === "Approved"
+                        className={`cursor-pointer px-4 py-2 rounded ${filterStatus === "Approved"
                             ? "bg-green-600 text-white"
                             : "bg-gray-200"
                             }`}
@@ -61,7 +61,7 @@ function Regularizations() {
                     </button>
                     <button
                         onClick={() => setFilterStatus("Rejected")}
-                        className={`px-4 py-2 rounded ${filterStatus === "Rejected"
+                        className={`cursor-pointer px-4 py-2 rounded ${filterStatus === "Rejected"
                             ? "bg-red-600 text-white"
                             : "bg-gray-200"
                             }`}
@@ -102,14 +102,14 @@ function Regularizations() {
                                             <>
                                                 <button
                                                     onClick={() => handleApprove(item._id)}
-                                                    className="bg-green-600 text-white px-3 py-1 rounded"
+                                                    className="cursor-pointer bg-green-600 text-white px-3 py-1 rounded"
                                                 >
                                                     Approve
                                                 </button>
 
                                                 <button
                                                     onClick={() => handleReject(item._id)}
-                                                    className="bg-red-600 text-white px-3 py-1 rounded"
+                                                    className="cursor-pointer bg-red-600 text-white px-3 py-1 rounded"
                                                 >
                                                     Reject
                                                 </button>

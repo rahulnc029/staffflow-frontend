@@ -132,8 +132,8 @@ function Attendance() {
                     )
                 }
                 <div className="flex gap-4 mt-4">
-                    <button onClick={handleClockIn} disabled={todayAttendance || isHoliday} className={`px-5 py-2 rounded text-white ${todayAttendance || isHoliday ? "bg-gray-400 cursor-not-allowed" : "bg-green-600"}`}>Clock In</button>
-                    <button onClick={handleClockOut} disabled={!todayAttendance || todayAttendance?.checkOutTime} className={`px-5 py-2 rounded text-white ${!todayAttendance || todayAttendance?.checkOutTime ? "bg-gray-400 cursor-not-allowed" : "bg-red-600"}`}>Clock Out</button>
+                    <button onClick={handleClockIn} disabled={todayAttendance || isHoliday} className={`cursor-pointer px-5 py-2 rounded text-white ${todayAttendance || isHoliday ? "bg-gray-400 cursor-not-allowed" : "bg-green-600"}`}>Clock In</button>
+                    <button onClick={handleClockOut} disabled={!todayAttendance || todayAttendance?.checkOutTime} className={`cursor-pointer px-5 py-2 rounded text-white ${!todayAttendance || todayAttendance?.checkOutTime ? "bg-gray-400 cursor-not-allowed" : "bg-red-600"}`}>Clock Out</button>
                 </div>
             </div>
 
@@ -183,7 +183,7 @@ function Attendance() {
 
                                                     setShowRegularization(true);
                                                 }}
-                                                className="text-orange-500 text-xl cursor-pointer"
+                                                className="text-orange-500 text-xl cursor-pointer cursor-pointer"
                                             >
                                                 📝
                                             </button>
@@ -264,12 +264,12 @@ function Attendance() {
                             <div className="flex gap-3">
                                 <button
                                     onClick={handleRegularization}
-                                    className="bg-blue-600 text-white px-4 py-2 rounded"
+                                    className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer"
                                 >
                                     Submit
                                 </button>
 
-                                <button className="bg-gray-400 text-white px-4 py-2 rounded" onClick={() => setShowRegularization(false)}>Cancel</button>
+                                <button className="bg-gray-400 text-white px-4 py-2 rounded cursor-pointer" onClick={() => setShowRegularization(false)}>Cancel</button>
                             </div>
                         </div>
                     </div>

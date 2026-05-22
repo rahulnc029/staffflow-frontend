@@ -8,9 +8,21 @@ function AttendanceCalendar() {
     const [holidays, setHolidays] = useState([]);
     const [leaves, setLeaves] = useState([]);
 
-    const currentDate = new Date();
+    const [currentDate, setCurrentDate] = useState(new Date());
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth();
+
+    const handlePrevMonth = () => {
+        setCurrentDate(
+            new Date(currentYear, currentMonth - 1, 1)
+        );
+    };
+
+    const handleNextMonth = () => {
+        setCurrentDate(
+            new Date(currentYear, currentMonth + 1, 1)
+        );
+    };
 
     const monthNames = [
         "January",
@@ -105,6 +117,9 @@ function AttendanceCalendar() {
                 <h1 className="text-2xl font-bold mb-6">
                     Attendance Calendar
                 </h1>
+
+                <button onClick={handlePrevMonth}>←</button>
+                <button onClick={handleNextMonth}>→</button>
 
                 <h2 className="text-xl font-semibold mb-4">
                     {monthNames[currentMonth]} {currentYear}

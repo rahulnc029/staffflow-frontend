@@ -41,7 +41,7 @@ function Login() {
 
         } catch (error) {
             setError(
-                error.response?.data?.messsage || "Login Failed"
+                error.response?.data?.message || "Login Failed"
             )
         }
     }
