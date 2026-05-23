@@ -6,13 +6,17 @@ import ManagerLayout from "../../layouts/ManagerLayout";
 function LeaveRequests() {
     const [leaves, setLeaves] = useState([]);
     const [filterStatus, setFilterStatus] = useState("All");
+    const [loading, setLoading] = useState(false);
 
     const fetchLeaves = async () => {
         try {
+            setLoading(true);
             const response = await API.get("/leave/requests");
             setLeaves(response.data);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -93,54 +97,74 @@ function LeaveRequests() {
                     </thead>
 
                     <tbody>
-                        {filteredLeaves.map((item) => (
-                            <tr key={item._id} className="border-b">
-                                <td className="p-3">
-                                    {item.employeeId?.employeeName}
-                                </td>
-                                <td className="p-3">
-                                    {item.leaveType}
-                                </td>
-                                <td className="p-3">
-                                    {item.fromDate}
-                                </td>
-                                <td className="p-3">
-                                    {item.toDate}
-                                </td>
-                                <td className="p-3">
-                                    {item.totalDays}
-                                </td>
-                                <td className="p-3">
-                                    {item.reason}
-                                </td>
-                                <td className="p-3">
-                                    <span
-                                        className={`px-2 py-1 rounded text-white text-sm ${item.status === "Pending" ? "bg-orange-500" : item.status === "Approved" ? "bg-green-600" : "bg-red-600"
-                                            }`}
-                                    >
-                                        {item.status}
-                                    </span>
-                                </td>
-                                <td className="p-3 flex gap-2">
-                                    {item.status === "Pending" && (
-                                        <>
-                                            <button
-                                                onClick={() => handleApprove(item._id)}
-                                                className="bg-green-600 text-white px-3 py-1 rounded cursor-pointer"
+                        {
+                            loading ? (
+                                <tr>
+                                    <td colSpan="8" className="text-center py-10">
+                                        <div className="flex justify-center items-center">
+                                            <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : filteredLeaves.length > 0 ? (
+                                filteredLeaves.map((item) => (
+                                    <tr key={item._id} className="border-b">
+                                        <td className="p-3">
+                                            {item.employeeId?.employeeName}
+                                        </td>
+                                        <td className="p-3">
+                                            {item.leaveType}
+                                        </td>
+                                        <td className="p-3">
+                                            {item.fromDate}
+                                        </td>
+                                        <td className="p-3">
+                                            {item.toDate}
+                                        </td>
+                                        <td className="p-3">
+                                            {item.totalDays}
+                                        </td>
+                                        <td className="p-3">
+                                            {item.reason}
+                                        </td>
+                                        <td className="p-3">
+                                            <span
+                                                className={`px-2 py-1 rounded text-white text-sm ${item.status === "Pending" ? "bg-orange-500" : item.status === "Approved" ? "bg-green-600" : "bg-red-600"
+                                                    }`}
                                             >
-                                                Approve
-                                            </button>
-                                            <button
-                                                onClick={() => handleReject(item._id)}
-                                                className="bg-red-600 text-white px-3 py-1 rounded cursor-pointer"
-                                            >
-                                                Reject
-                                            </button>
-                                        </>
-                                    )}
-                                </td>
-                            </tr>
-                        ))}
+                                                {item.status}
+                                            </span>
+                                        </td>
+                                        <td className="p-3 flex gap-2">
+                                            {item.status === "Pending" && (
+                                                <>
+                                                    <button
+                                                        onClick={() => handleApprove(item._id)}
+                                                        className="bg-green-600 text-white px-3 py-1 rounded cursor-pointer"
+                                                    >
+                                                        Approve
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleReject(item._id)}
+                                                        className="bg-red-600 text-white px-3 py-1 rounded cursor-pointer"
+                                                    >
+                                                        Reject
+                                                    </button>
+                                                </>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+
+                                <tr>
+                                    <td colSpan="8" className="text-center py-6 text-gray-500">
+                                        No Leave requests found
+                                    </td>
+                                </tr>
+                            )
+                                
+                        }
                     </tbody>
                 </table>
             </div>

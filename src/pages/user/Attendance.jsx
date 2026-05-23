@@ -17,6 +17,9 @@ function Attendance() {
     });
     const [isHoliday, setisHoliday] = useState(false);
     const [holidayMessage, setHolidayMessage] = useState("");
+    const [clockInLoading, setClockInLoading] = useState(false);
+    const [clockOutLoading, setClockOutLoading] = useState(false);
+    const [regularizationLoading, setRegularizationLoading] = useState(false);
 
     // LIVE CLOCK
     useEffect(() => {
@@ -69,38 +72,67 @@ function Attendance() {
     // CLOCK IN
     const handleClockIn = async () => {
         try {
+            setClockInLoading(true);
+
             await API.post("/attendance/clock-in", {
                 employeeId: user.id,
             });
 
             fetchAttendance();
+
         } catch (error) {
             alert(error.response?.data?.message);
+        } finally {
+            setClockInLoading(false);
         }
     }
 
     // CLOCK OUT
     const handleClockOut = async () => {
         try {
-            const confirmClockOut = window.confirm(`Are you sure you want to clock out at ${currentTime}`);
+            const confirmClockOut = window.confirm(
+                `Are you sure you want to clock out at ${currentTime}`
+            );
+
             if (!confirmClockOut) {
                 return;
             }
-            await API.post("/attendance/clock-out", { employeeId: user.id });
+
+            setClockOutLoading(true);
+
+            await API.post("/attendance/clock-out", {
+                employeeId: user.id,
+            });
+
             fetchAttendance();
+
         } catch (error) {
             alert(error.response?.data?.message);
+        } finally {
+            setClockOutLoading(false);
         }
     };
 
     const handleRegularization = async () => {
         try {
-            await API.post("/attendance/regularization", { attendanceId: selectedAttendance._id, ...regularizationData });
+            setRegularizationLoading(true);
+
+            await API.post("/attendance/regularization", {
+                attendanceId: selectedAttendance._id,
+                ...regularizationData,
+            });
+
             alert("Regularization submitted successfully");
+
             setShowRegularization(false);
+
             fetchAttendance();
+
         } catch (error) {
             alert(error.response?.data?.message);
+
+        } finally {
+            setRegularizationLoading(false);
         }
     };
 
@@ -132,8 +164,32 @@ function Attendance() {
                     )
                 }
                 <div className="flex gap-4 mt-4">
-                    <button onClick={handleClockIn} disabled={todayAttendance || isHoliday} className={`cursor-pointer px-5 py-2 rounded text-white ${todayAttendance || isHoliday ? "bg-gray-400 cursor-not-allowed" : "bg-green-600"}`}>Clock In</button>
-                    <button onClick={handleClockOut} disabled={!todayAttendance || todayAttendance?.checkOutTime} className={`cursor-pointer px-5 py-2 rounded text-white ${!todayAttendance || todayAttendance?.checkOutTime ? "bg-gray-400 cursor-not-allowed" : "bg-red-600"}`}>Clock Out</button>
+                    <button
+                        onClick={handleClockIn}
+                        disabled={todayAttendance || isHoliday || clockInLoading}
+                        className={`px-5 py-2 rounded text-white ${todayAttendance || isHoliday || clockInLoading
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-green-600"
+                            }`}
+                    >
+                        {clockInLoading ? "Clocking In..." : "Clock In"}
+                    </button>
+                    <button
+                        onClick={handleClockOut}
+                        disabled={
+                            !todayAttendance ||
+                            todayAttendance?.checkOutTime ||
+                            clockOutLoading
+                        }
+                        className={`px-5 py-2 rounded text-white ${!todayAttendance ||
+                                todayAttendance?.checkOutTime ||
+                                clockOutLoading
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-red-600"
+                            }`}
+                    >
+                        {clockOutLoading ? "Clocking Out..." : "Clock Out"}
+                    </button>
                 </div>
             </div>
 
@@ -264,9 +320,15 @@ function Attendance() {
                             <div className="flex gap-3">
                                 <button
                                     onClick={handleRegularization}
-                                    className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer"
+                                    disabled={regularizationLoading}
+                                    className={`text-white px-4 py-2 rounded ${regularizationLoading
+                                            ? "bg-blue-400 cursor-not-allowed"
+                                            : "bg-blue-600 cursor-pointer"
+                                        }`}
                                 >
-                                    Submit
+                                    {regularizationLoading
+                                        ? "Submitting..."
+                                        : "Submit"}
                                 </button>
 
                                 <button className="bg-gray-400 text-white px-4 py-2 rounded cursor-pointer" onClick={() => setShowRegularization(false)}>Cancel</button>

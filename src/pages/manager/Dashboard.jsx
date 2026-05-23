@@ -1,6 +1,7 @@
 import ManagerLayout from "../../layouts/ManagerLayout";
 import { useEffect, useState } from "react";
 import API from "../../services/api";
+import Loader from "../../components/Loader";
 
 function Dashboard() {
     const [dashboard, setDashboard] = useState(null);
@@ -17,13 +18,6 @@ function Dashboard() {
         fetchDashboard();
     }, []);
 
-    if (!dashboard) {
-        return (
-            <ManagerLayout>
-                <p>Loading...</p>
-            </ManagerLayout>
-        );
-    }
 
     return (
         <ManagerLayout>
@@ -42,7 +36,11 @@ function Dashboard() {
                     </h2>
 
                     <p className="text-2xl font-bold mt-1">
-                        {dashboard.totalEmployees}
+                        {dashboard ? (
+                            dashboard.totalEmployees
+                        ) : (
+                            <Loader size="sm"/>
+                        )}
                     </p>
                 </div>
 
@@ -52,7 +50,11 @@ function Dashboard() {
                     </h2>
 
                     <p className="text-2xl font-bold mt-1 text-green-600">
-                        {dashboard.presentToday}
+                        {dashboard ? (
+                            dashboard.presentToday
+                        ) : (
+                            <Loader size="sm"/>
+                        )}
                     </p>
                 </div>
 
@@ -62,7 +64,11 @@ function Dashboard() {
                     </h2>
 
                     <p className="text-2xl font-bold mt-1 text-purple-600">
-                        {dashboard.onLeaveToday}
+                        {dashboard ? (
+                            dashboard.onLeaveToday
+                        ) : (
+                            <Loader size="sm"/>
+                        )}
                     </p>
                 </div>
 
@@ -72,7 +78,11 @@ function Dashboard() {
                     </h2>
 
                     <p className="text-2xl font-bold mt-1 text-orange-600">
-                        {dashboard.incompleteAttendance}
+                        {dashboard ? (
+                            dashboard.incompleteAttendance
+                        ) : (
+                            <Loader size="sm"/>
+                        )}
                     </p>
                 </div>
 
@@ -82,7 +92,11 @@ function Dashboard() {
                     </h2>
 
                     <p className="text-2xl font-bold mt-1 text-blue-600">
-                        {dashboard.pendingLeaves}
+                        {dashboard ? (
+                            dashboard.pendingLeaves
+                        ) : (
+                            <Loader size="sm"/>
+                        )}
                     </p>
                 </div>
 
@@ -92,7 +106,11 @@ function Dashboard() {
                     </h2>
 
                     <p className="text-2xl font-bold mt-1 text-red-600">
-                        {dashboard.pendingRegularizations}
+                        {dashboard ? (
+                            dashboard.pendingRegularizations
+                        ) : (
+                            <Loader size="sm"/>
+                        )}
                     </p>
                 </div>
 
@@ -130,7 +148,15 @@ function Dashboard() {
 
                     <tbody>
 
-                        {
+                        {!dashboard ? (
+                            <tr>
+                                <td colSpan="3" className="py-8">
+                                    <div className="flex justify-center">
+                                        <Loader />
+                                    </div>
+                                </td>
+                            </tr>
+                        ) : dashboard.recentLeaves.length > 0 ? (
                             dashboard.recentLeaves.map((item) => (
 
                                 <tr
@@ -153,6 +179,14 @@ function Dashboard() {
                                 </tr>
 
                             ))
+                        ) : (
+                            <tr>
+                                <td colSpan="3" className="text-center py-5 text-gray-500">
+                                    No leave requests found
+                                </td>
+                            </tr>
+                        )
+
                         }
 
                     </tbody>
@@ -193,7 +227,15 @@ function Dashboard() {
 
                     <tbody>
 
-                        {
+                        {!dashboard ? (
+                            <tr>
+                                <td colSpan="3" className="py-8">
+                                    <div className="flex justify-center">
+                                        <Loader />
+                                    </div>
+                                </td>
+                            </tr>
+                        ) : dashboard.recentRegularizations.length > 0 ? (
                             dashboard.recentRegularizations.map((item) => (
 
                                 <tr
@@ -216,6 +258,14 @@ function Dashboard() {
                                 </tr>
 
                             ))
+                        ) : (
+                            <tr>
+                                <td colSpan="3" className="text-center py-5 text-gray-500">
+                                    No regularizations found
+                                </td>
+                            </tr>
+                        )
+
                         }
 
                     </tbody>

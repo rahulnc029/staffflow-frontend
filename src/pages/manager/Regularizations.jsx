@@ -5,10 +5,26 @@ import ManagerLayout from "../../layouts/ManagerLayout";
 function Regularizations() {
     const [requests, setRequests] = useState([]);
     const [filterStatus, setFilterStatus] = useState("All");
+    const [loading, setLoading] = useState(false);
+    const [approveLoadingId, setApproveLoadingId] = useState(null);
+    const [rejectLoadingId, setRejectLoadingId] = useState(null);
 
     const fetchRequests = async () => {
-        const response = await API.get("/attendance/regularizations");
-        setRequests(response.data);
+        try {
+            setLoading(true);
+
+            const response = await API.get(
+                "/attendance/regularizations"
+            );
+
+            setRequests(response.data);
+
+        } catch (error) {
+            console.log(error);
+
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -18,13 +34,39 @@ function Regularizations() {
     const filteredRequests = filterStatus === "All" ? requests : requests.filter((item) => item.regularizationStatus === filterStatus);
 
     const handleApprove = async (id) => {
-        await API.put(`/attendance/regularizations/approve/${id}`);
-        fetchRequests();
+        try {
+            setApproveLoadingId(id);
+
+            await API.put(
+                `/attendance/regularizations/approve/${id}`
+            );
+
+            fetchRequests();
+
+        } catch (error) {
+            console.log(error);
+
+        } finally {
+            setApproveLoadingId(null);
+        }
     };
 
     const handleReject = async (id) => {
-        await API.put(`/attendance/regularizations/reject/${id}`);
-        fetchRequests();
+        try {
+            setRejectLoadingId(id);
+
+            await API.put(
+                `/attendance/regularizations/reject/${id}`
+            );
+
+            fetchRequests();
+
+        } catch (error) {
+            console.log(error);
+
+        } finally {
+            setRejectLoadingId(null);
+        }
     };
 
     return (
@@ -84,46 +126,103 @@ function Regularizations() {
                     </thead>
 
                     <tbody>
-                        {
+                        {loading ? (
+                            <tr>
+                                <td
+                                    colSpan="7"
+                                    className="text-center py-10"
+                                >
+                                    <div className="flex justify-center items-center">
+                                        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        ) : filteredRequests.length > 0 ? (
                             filteredRequests.map((item) => (
-                                <tr key={item._id} className="border-b">
+                                <tr
+                                    key={item._id}
+                                    className="border-b"
+                                >
                                     <td className="p-3">
-                                        {
-                                            item.employeeId?.employeeName
-                                        }
+                                        {item.employeeId?.employeeName}
                                     </td>
-                                    <td className="p-3">{item.date}</td>
-                                    <td className="p-3">{item.regularizationReason}</td>
-                                    <td className="p-3">{item.regularizedCheckIn}</td>
-                                    <td className="p-3">{item.regularizedCheckOut}</td>
+
+                                    <td className="p-3">
+                                        {item.date}
+                                    </td>
+
+                                    <td className="p-3">
+                                        {item.regularizationReason}
+                                    </td>
+
+                                    <td className="p-3">
+                                        {item.regularizedCheckIn}
+                                    </td>
+
+                                    <td className="p-3">
+                                        {item.regularizedCheckOut}
+                                    </td>
+
                                     <td className="p-3 flex gap-2">
+                                        {item.regularizationStatus ===
+                                            "Pending" && (
+                                                <>
+                                                    <button
+                                                        onClick={() =>
+                                                            handleApprove(item._id)
+                                                        }
+                                                        disabled={
+                                                            approveLoadingId ===
+                                                            item._id ||
+                                                            rejectLoadingId ===
+                                                            item._id
+                                                        }
+                                                        className={`px-3 py-1 rounded text-white ${approveLoadingId ===
+                                                                item._id
+                                                                ? "bg-green-400 cursor-not-allowed"
+                                                                : "bg-green-600 cursor-pointer"
+                                                            }`}
+                                                    >
+                                                        {approveLoadingId ===
+                                                            item._id
+                                                            ? "Approving..."
+                                                            : "Approve"}
+                                                    </button>
 
-                                        {item.regularizationStatus === "Pending" && (
-                                            <>
-                                                <button
-                                                    onClick={() => handleApprove(item._id)}
-                                                    className="cursor-pointer bg-green-600 text-white px-3 py-1 rounded"
-                                                >
-                                                    Approve
-                                                </button>
-
-                                                <button
-                                                    onClick={() => handleReject(item._id)}
-                                                    className="cursor-pointer bg-red-600 text-white px-3 py-1 rounded"
-                                                >
-                                                    Reject
-                                                </button>
-                                            </>
-                                        )}
-
+                                                    <button
+                                                        onClick={() =>
+                                                            handleReject(item._id)
+                                                        }
+                                                        disabled={
+                                                            approveLoadingId ===
+                                                            item._id ||
+                                                            rejectLoadingId ===
+                                                            item._id
+                                                        }
+                                                        className={`px-3 py-1 rounded text-white ${rejectLoadingId ===
+                                                                item._id
+                                                                ? "bg-red-400 cursor-not-allowed"
+                                                                : "bg-red-600 cursor-pointer"
+                                                            }`}
+                                                    >
+                                                        {rejectLoadingId ===
+                                                            item._id
+                                                            ? "Rejecting..."
+                                                            : "Reject"}
+                                                    </button>
+                                                </>
+                                            )}
                                     </td>
+
                                     <td className="p-3">
                                         <span
-                                            className={`px-2 py-1 rounded text-white text-sm ${item.regularizationStatus === "Pending"
-                                                ? "bg-orange-500"
-                                                : item.regularizationStatus === "Approved"
-                                                    ? "bg-green-600"
-                                                    : "bg-red-600"
+                                            className={`px-2 py-1 rounded text-white text-sm ${item.regularizationStatus ===
+                                                    "Pending"
+                                                    ? "bg-orange-500"
+                                                    : item.regularizationStatus ===
+                                                        "Approved"
+                                                        ? "bg-green-600"
+                                                        : "bg-red-600"
                                                 }`}
                                         >
                                             {item.regularizationStatus}
@@ -131,7 +230,16 @@ function Regularizations() {
                                     </td>
                                 </tr>
                             ))
-                        }
+                        ) : (
+                            <tr>
+                                <td
+                                    colSpan="7"
+                                    className="text-center py-6 text-gray-500"
+                                >
+                                    No regularization requests found
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>

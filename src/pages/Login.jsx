@@ -12,6 +12,7 @@ function Login() {
     })
 
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         setFormData({
@@ -22,6 +23,8 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError("");
 
         try {
             const response = await API.post("/auth/login", formData)
@@ -43,6 +46,8 @@ function Login() {
             setError(
                 error.response?.data?.message || "Login Failed"
             )
+        } finally{
+            setLoading(false);
         }
     }
 
@@ -83,9 +88,10 @@ function Login() {
                 </div>
                 <button
                     type="submit"
-                    className="w-full bg-blue-600 text-white p-2 rounded cursor-pointer"
+                    disabled={loading}
+                    className={`w-full text-white p-2 rounded cursor-pointer ${loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600"}`}
                 >
-                    Login
+                    {loading ? "Logging in..." : "Login"}
                 </button>
             </form>
         </div>
