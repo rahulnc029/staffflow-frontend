@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import UserLayout from "../../layouts/UserLayout";
 import API from "../../services/api";
+import Loader from "../../components/Loader";
 
 function Dashboard() {
 
@@ -11,23 +12,22 @@ function Dashboard() {
     const [attendance, setAttendance] = useState([]);
     const [holidays, setHolidays] = useState([]);
     const [leaves, setLeaves] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const [currentTime, setCurrentTime] = useState("");
 
     const [todayAttendance, setTodayAttendance] = useState(null);
+    const [clockInLoading, setClockInLoading] = useState(false);
+    const [clockOutLoading, setClockOutLoading] = useState(false);
 
-    const [showHolidayModal, setShowHolidayModal] =
-        useState(false);
+    const [showHolidayModal, setShowHolidayModal] = useState(false);
 
     // Calendar Month State
-    const [currentDate, setCurrentDate] =
-        useState(new Date());
+    const [currentDate, setCurrentDate] = useState(new Date());
 
-    const currentYear =
-        currentDate.getFullYear();
+    const currentYear = currentDate.getFullYear();
 
-    const currentMonth =
-        currentDate.getMonth();
+    const currentMonth = currentDate.getMonth();
 
     const monthNames = [
         "January",
@@ -64,14 +64,13 @@ function Dashboard() {
 
         try {
 
-            const attendanceResponse =
-                await API.get(`/attendance/${user.id}`);
+            setLoading(true);
 
-            const holidayResponse =
-                await API.get("/holidays");
+            const attendanceResponse = await API.get(`/attendance/${user.id}`);
 
-            const leaveResponse =
-                await API.get(`/leave/my/${user.id}`);
+            const holidayResponse = await API.get("/holidays");
+
+            const leaveResponse = await API.get(`/leave/my/${user.id}`);
 
             setAttendance(attendanceResponse.data);
 
@@ -79,13 +78,11 @@ function Dashboard() {
 
             setLeaves(leaveResponse.data);
 
-            const today =
-                new Date().toISOString().split("T")[0];
+            const today = new Date().toISOString().split("T")[0];
 
-            const todayRecord =
-                attendanceResponse.data.find(
-                    (item) => item.date === today
-                );
+            const todayRecord = attendanceResponse.data.find(
+                (item) => item.date === today
+            );
 
             setTodayAttendance(todayRecord);
 
@@ -93,6 +90,8 @@ function Dashboard() {
 
             console.log(error);
 
+        } finally {
+            setLoading(false);
         }
 
     };
@@ -107,6 +106,7 @@ function Dashboard() {
     const handleClockIn = async () => {
 
         try {
+            setClockInLoading(true);
 
             await API.post("/attendance/clock-in", {
                 employeeId: user.id,
@@ -118,6 +118,8 @@ function Dashboard() {
 
             alert(error.response?.data?.message);
 
+        } finally {
+            setClockInLoading(false);
         }
 
     };
@@ -126,6 +128,8 @@ function Dashboard() {
     const handleClockOut = async () => {
 
         try {
+
+            setClockOutLoading(true);
 
             await API.post("/attendance/clock-out", {
                 employeeId: user.id,
@@ -137,6 +141,8 @@ function Dashboard() {
 
             alert(error.response?.data?.message);
 
+        } finally {
+            setClockOutLoading(false);
         }
 
     };
@@ -173,19 +179,17 @@ function Dashboard() {
 
     // CALENDAR LOGIC
 
-    const daysInMonth =
-        new Date(
-            currentYear,
-            currentMonth + 1,
-            0
-        ).getDate();
+    const daysInMonth = new Date(
+        currentYear,
+        currentMonth + 1,
+        0
+    ).getDate();
 
-    const firstDay =
-        new Date(
-            currentYear,
-            currentMonth,
-            1
-        ).getDay();
+    const firstDay = new Date(
+        currentYear,
+        currentMonth,
+        1
+    ).getDay();
 
     const cells = [];
 
@@ -341,9 +345,14 @@ function Dashboard() {
                         Live Attendance
                     </h2>
 
-                    <p className="text-2xl font-bold">
-                        {currentTime}
-                    </p>
+
+                    {
+                        loading ? (<Loader />) : (
+                            <p className="text-2xl font-bold">
+                                {currentTime}
+                            </p>
+                        )
+                    }
 
                     <p className="mt-3">
                         Status:
@@ -360,28 +369,29 @@ function Dashboard() {
 
                         <button
                             onClick={handleClockIn}
-                            disabled={todayAttendance}
-                            className={`px-4 py-2 rounded text-white cursor-pointer ${todayAttendance
-                                ? "bg-gray-400"
-                                : "bg-green-600"
+                            disabled={todayAttendance || clockInLoading}
+                            className={`px-4 py-2 rounded text-white ${todayAttendance || clockInLoading
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-green-600 cursor-pointer"
                                 }`}
                         >
-                            Clock In
+                            {clockInLoading ? "Clocking In..." : "Clock In"}
                         </button>
 
                         <button
                             onClick={handleClockOut}
                             disabled={
                                 !todayAttendance ||
-                                todayAttendance?.checkOutTime
+                                todayAttendance?.checkOutTime ||
+                                clockOutLoading
                             }
-                            className={`px-4 py-2 rounded text-white cursor-pointer ${!todayAttendance ||
-                                todayAttendance?.checkOutTime
-                                ? "bg-gray-400"
-                                : "bg-red-600"
+                            className={`px-4 py-2 rounded text-white ${!todayAttendance ||
+                                todayAttendance?.checkOutTime || clockOutLoading
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-red-600 cursor-pointer"
                                 }`}
                         >
-                            Clock Out
+                            {clockOutLoading ? "Clocking Out..." : "Clock Out"}
                         </button>
 
                     </div>
@@ -397,7 +407,9 @@ function Dashboard() {
                     </h2>
 
                     {
-                        upcomingHoliday ? (
+                        loading ? (
+                            <Loader size="sm" />
+                        ) : upcomingHoliday ? (
                             <>
                                 <p className="text-xl font-bold">
                                     {upcomingHoliday.holidayName}
@@ -419,6 +431,7 @@ function Dashboard() {
                         ) : (
                             <p>No upcoming holidays</p>
                         )
+
                     }
 
                 </div>
@@ -437,9 +450,14 @@ function Dashboard() {
                             Sick Leave
                         </p>
 
-                        <p className="text-xl font-bold">
-                            {sickRemaining}/12
-                        </p>
+
+                        {
+                            loading ? (<Loader size="sm" />) : (
+                                <p className="text-xl font-bold">
+                                    {sickRemaining}/12
+                                </p>
+                            )
+                        }
 
                     </div>
 
@@ -449,9 +467,13 @@ function Dashboard() {
                             Casual Leave
                         </p>
 
-                        <p className="text-xl font-bold">
-                            {casualRemaining}/12
-                        </p>
+                        {
+                            loading ? (<Loader size="sm" />) : (
+                                <p className="text-xl font-bold">
+                                    {casualRemaining}/12
+                                </p>
+                            )
+                        }
 
                     </div>
 
@@ -569,7 +591,7 @@ function Dashboard() {
                             <span>Present Days</span>
 
                             <span className="font-bold text-green-600">
-                                {presentCount}
+                                {loading ? <Loader size="sm" /> : presentCount}
                             </span>
                         </div>
 
@@ -577,7 +599,7 @@ function Dashboard() {
                             <span>Incomplete</span>
 
                             <span className="font-bold text-orange-500">
-                                {incompleteCount}
+                                {loading ? <Loader size="sm" /> : incompleteCount}
                             </span>
                         </div>
 
@@ -585,7 +607,7 @@ function Dashboard() {
                             <span>Late Arrivals</span>
 
                             <span className="font-bold text-red-500">
-                                {lateCount}
+                                {loading ? <Loader size="sm" /> : lateCount}
                             </span>
                         </div>
 
@@ -646,49 +668,54 @@ function Dashboard() {
                         </thead>
 
                         <tbody>
-
                             {
-                                attendance.slice(0, 5).map((item) => (
-
-                                    <tr
-                                        key={item._id}
-                                        className="border-b last:border-none"
-                                    >
-
-                                        <td className="py-3">
-                                            {item.date}
+                                loading ? (
+                                    <tr>
+                                        <td
+                                            colSpan="5"
+                                            className="py-10"
+                                        >
+                                            <div className="flex justify-center">
+                                                <Loader />
+                                            </div>
                                         </td>
-
-                                        <td className="py-3">
-                                            {item.checkInTime || "--"}
-                                        </td>
-
-                                        <td className="py-3">
-                                            {item.checkOutTime || "--"}
-                                        </td>
-
-                                        <td className="py-3">
-                                            {item.grossHours || "--"}
-                                        </td>
-
-                                        <td className="py-3">
-
-                                            <span
-                                                className={`px-2 py-1 rounded text-xs font-medium ${item.status === "Present"
-                                                    ? "bg-green-100 text-green-700"
-                                                    : "bg-orange-100 text-orange-700"
-                                                    }`}
-                                            >
-                                                {item.status}
-                                            </span>
-
-                                        </td>
-
                                     </tr>
+                                ) : (
+                                    attendance.slice(0, 5).map((item) => (
+                                        <tr
+                                            key={item._id}
+                                            className="border-b last:border-none"
+                                        >
+                                            <td className="py-3">
+                                                {item.date}
+                                            </td>
 
-                                ))
+                                            <td className="py-3">
+                                                {item.checkInTime || "--"}
+                                            </td>
+
+                                            <td className="py-3">
+                                                {item.checkOutTime || "--"}
+                                            </td>
+
+                                            <td className="py-3">
+                                                {item.grossHours || "--"}
+                                            </td>
+
+                                            <td className="py-3">
+                                                <span
+                                                    className={`px-2 py-1 rounded text-xs font-medium ${item.status === "Present"
+                                                            ? "bg-green-100 text-green-700"
+                                                            : "bg-orange-100 text-orange-700"
+                                                        }`}
+                                                >
+                                                    {item.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )
                             }
-
                         </tbody>
 
                     </table>
